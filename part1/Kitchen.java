@@ -72,33 +72,43 @@ public class Kitchen {
         if (path.equals("/toggle")) {
             String name = param(query, "name");
             if (name.equals("oven")) {
-                ovenOn = !ovenOn;
-                notifications.add("Oven turned " + (ovenOn ? "on" : "off"));
-                if (ovenOn) {
-                    timer.schedule(new TimerTask() {
-                        public void run() {
-                            synchronized (Kitchen.class) {
-                                if (ovenOn)
-                                    notifications.add("Oven pre-heated to " + ovenTemperature + " F");
+                if(dishwasherOn){
+                    notifications.add("Oven can't be turned on the dishwasher is also on.");
+                }
+                else{
+                    ovenOn = !ovenOn;
+                    notifications.add("Oven turned " + (ovenOn ? "on" : "off"));
+                    if (ovenOn) {
+                        timer.schedule(new TimerTask() {
+                            public void run() {
+                                synchronized (Kitchen.class) {
+                                    if (ovenOn)
+                                        notifications.add("Oven pre-heated to " + ovenTemperature + " F");
+                                }
                             }
-                        }
-                    }, 1500);
+                        }, 1500);
+                    }
                 }
             }
             if (name.equals("dishwasher")) {
-                dishwasherOn = !dishwasherOn;
-                notifications.add("Dishwasher turned " + (dishwasherOn ? "on" : "off"));
-                if (dishwasherOn) {
-                    timer.schedule(new TimerTask() {
-                        public void run() {
-                            synchronized (Kitchen.class) {
-                                if (dishwasherOn) {
-                                    dishwasherOn = false;
-                                    notifications.add("Dishwasher finished the " + dishwasherCycle + " cycle");
+                if(ovenOn){
+                    notifications.add("Can't turn the dishwasher on right now the oven is also on");
+                }
+                else{
+                    dishwasherOn = !dishwasherOn;
+                    notifications.add("Dishwasher turned " + (dishwasherOn ? "on" : "off"));
+                    if (dishwasherOn) {
+                        timer.schedule(new TimerTask() {
+                            public void run() {
+                                synchronized (Kitchen.class) {
+                                    if (dishwasherOn) {
+                                        dishwasherOn = false;
+                                        notifications.add("Dishwasher finished the " + dishwasherCycle + " cycle");
+                                    }
                                 }
                             }
-                        }
-                    }, 3000);
+                        }, 3000);
+                    }
                 }
             }
             if (name.equals("fridge")) {

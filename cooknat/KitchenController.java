@@ -21,12 +21,40 @@ public class KitchenController implements HttpHandler {
         String query = exchange.getRequestURI().getRawQuery();
 
         // TODO 2.1: handle /toggle (call model.toggle(...))
+        if (path.equals("/toggle")){
+            String name = param(query,"name");
+            if (name.equals("fridge") && model.isFridgeOn() && !param(query,"confirmed").equals("yes")){
+                send(exchange, view.confirmFridgeOff());
+                return;
+            }
+            model.toggle(name);
+            redirect(exchange,"/");
+            return;
+        }
         // TODO 2.2: handle /temperature
+        if(path.equals("/temperature")){
+            int value = number(param(query, "value"));
+            String temp = model.setOvenTemperature(value);
+            redirectWith(exchange, temp);
+            return;
+        }
         // TODO 2.3: handle /cycle
+        if(path.equals("/cycle")){
+            String dishwasherCycle = param(query, "value");
+            String error = model.setDishwasherCycle(dishwasherCycle);
+            redirectWith(exchange, error);
+            return;
+        }
         // TODO 2.4: handle /alloff
+        if(path.equals("/alloff")){
+            model.allOff();
+            redirect(exchange, "/");
+            return;
+        }
         // Hint: read values from the form with param(query, "value") and number(...),
         // then redirect(exchange, "/"), or redirectWith(exchange, error) if the model returned an error
         // TODO 2.5 (check step 6): if the fridge is on and param(query, "confirmed") is not "yes", send view.confirmFridgeOff() instead
+
 
         send(exchange, view.page(model, param(query, "error")));
     }

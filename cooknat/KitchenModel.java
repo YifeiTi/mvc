@@ -30,22 +30,69 @@ public class KitchenModel {
     // Turns "oven", "dishwasher", or "fridge" on or off, incl. your rule from Pt. 1 and the timers
     // Hint: one private method per appliance (e.g., toggleOven())
     public synchronized void toggle(String name) {
-        // TODO 2.1 (check steps 1 and 3)
+        if (name.equals("oven")){
+            if (dishwasherOn){
+                notifications.add("Oven cannot be turned on, the dishwasher is running");
+            }
+            else{
+                ovenOn = !ovenOn;
+                notifications.add("Oven turned " + (ovenOn ? "on" : "off"));
+                if (ovenOn) {
+                    later(1500, () -> notifications.add("Oven pre-heated to " + ovenTemperature + " F"));
+                }
+            }
+        }
+        else if (name.equals("dishwasher")){
+            if (ovenOn){
+                notifications.add("Dishwasher cannot be turned on, the oven is running");
+             }
+            else{
+                dishwasherOn = !dishwasherOn;
+                notifications.add("Dishwasher turned " + (dishwasherOn ? "on" : "off"));
+                if (dishwasherOn) {
+                    later(3000, ()-> notifications.add("\"Dishwasher finished the \" + dishwasherCycle + \" cycle\""));
+                }
+            }
+        }
+        else if(name.equals("fridge")){
+            fridgeOn = !fridgeOn;
+            notifications.add("Fridge turned" + (fridgeOn ? "on": "off"));
+        }
+        
     }
+
 
     // Returns an error message, or null if the temperature was set
     public synchronized String setOvenTemperature(int value) {
-        return null; // TODO 2.2 (check step 2)
+        if (value < 170 || value > 550 ){
+            return "Please enter a temperature from 170 degrees to 550 degrees";
+        }
+        else{
+            ovenTemperature = value;
+            notifications.add("Oven set to" + value + "F");
+            return null;
+        }
     }
 
     // Returns an error message, or null if the cycle was set
     public synchronized String setDishwasherCycle(String cycle) {
-        return null; // TODO 2.3 (check steps 4 and 5)
+        if (dishwasherOn){
+            return "You cannot change the cycle while the dishwasher is running";
+        }
+        dishwasherCycle = cycle;
+        return null;
     }
 
     // Turns off everything except the fridge
     public synchronized void allOff() {
-        // TODO 2.4 (check step 7)
+       if (ovenOn) {
+            ovenOn = false;
+            notifications.add("Oven turned off");
+        }
+        if (dishwasherOn) {
+            dishwasherOn = false;
+            notifications.add("Dishwasher turned off");
+        }
     }
 
     // Runs an action after a delay (for the timers), e.g., later(1500, () -> notifications.add("..."));
