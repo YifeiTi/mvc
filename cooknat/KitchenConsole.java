@@ -39,12 +39,29 @@ public class KitchenConsole implements Runnable {
         }
         // TODO 3a.2: turn the appliance on or off with the model, then printLastNotification()
         // Turning off the fridge requires an additional confirmation
+        if (name.equals("fridge") && on == false){
+            if(!confirm("Are you sure you want to turn the fridge off? (y/n)")){
+                System.out.println("Fridge not turned off");
+            }
+        }
+        else{
+            model.toggle(name);
+            printLastNotification();
+        }
     }
 
     // e.g., "temp 400"
     private void setTemperature(String value) {
         // TODO 3a.3: set the oven temperature with the model (use number(value)),
         // print the error if there is one, otherwise printLastNotification()
+        String error = model.setOvenTemperature(int(value));
+        if(error != null){
+            System.out.println(error);
+        }
+        else{
+            printLastNotification();
+        }
+        return;
     }
 
     // NO NEED TO CHANGE ANYTHING BELOW

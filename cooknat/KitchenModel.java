@@ -50,13 +50,14 @@ public class KitchenModel {
                 dishwasherOn = !dishwasherOn;
                 notifications.add("Dishwasher turned " + (dishwasherOn ? "on" : "off"));
                 if (dishwasherOn) {
-                    later(3000, ()-> notifications.add("\"Dishwasher finished the \" + dishwasherCycle + \" cycle\""));
+                    later(3000, ()-> {notifications.add("Dishwasher finished the " + dishwasherCycle +  " cycle");
+                    dishwasherOn = false;});
                 }
             }
         }
         else if(name.equals("fridge")){
             fridgeOn = !fridgeOn;
-            notifications.add("Fridge turned" + (fridgeOn ? "on": "off"));
+            notifications.add("Fridge turned " + (fridgeOn ? "on": "off"));
         }
         
     }
@@ -80,6 +81,7 @@ public class KitchenModel {
             return "You cannot change the cycle while the dishwasher is running";
         }
         dishwasherCycle = cycle;
+        notifications.add("Dishwasher cycle set to " + cycle);
         return null;
     }
 

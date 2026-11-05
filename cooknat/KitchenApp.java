@@ -12,5 +12,6 @@ public class KitchenApp {
         server.start();
         System.out.println("Cook N'At is running. Open http://localhost:1530 in your browser.");
         // TODO 3a.1: Start the console here (see Part 3a)
+        new Thread(new KitchenConsole(model)).start();
     }
 }
