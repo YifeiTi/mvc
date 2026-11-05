@@ -44,24 +44,21 @@ public class KitchenConsole implements Runnable {
                 System.out.println("Fridge not turned off");
             }
         }
-        else{
-            model.toggle(name);
-            printLastNotification();
-        }
+        model.toggle(name);
+        printLastNotification();
     }
 
     // e.g., "temp 400"
     private void setTemperature(String value) {
         // TODO 3a.3: set the oven temperature with the model (use number(value)),
         // print the error if there is one, otherwise printLastNotification()
-        String error = model.setOvenTemperature(int(value));
+        String error = model.setOvenTemperature(number(value));
         if(error != null){
             System.out.println(error);
         }
         else{
             printLastNotification();
         }
-        return;
     }
 
     // NO NEED TO CHANGE ANYTHING BELOW
